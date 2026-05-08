@@ -18,7 +18,7 @@ const ctx = ui.canvas.getContext('2d', { alpha: false });
 let dirHandle = null;
 let fileMap = new Map(); // "x,y" -> {x, y, map, chunkdata, zpop, files: {}}
 let selectedCells = new Set();
-let bounds = { minX: 0, maxX: 100, minY: 0, maxY: 100 };
+let bounds = { minX: 0, maxX: 78, minY: 0, maxY: 63 };
 let mapImageCache = new Map(); // "x,y" -> HTMLImageElement or null
 let scanState = { count: 0, startTime: 0, timerInterval: null };
 
@@ -37,8 +37,8 @@ const mapCities = [
     { name: "Louisville Airport", x: 60, y: 11 }
 ];
 let baseZoom = 1;
-let camera = { x: 50, y: 50, zoom: 1 };
-let targetCamera = { x: 50, y: 50, zoom: 1 };
+let camera = { x: 39, y: 31.5, zoom: 1 };
+let targetCamera = { x: 39, y: 31.5, zoom: 1 };
 let animFrameId = null;
 let isDragging = false;
 let isSelecting = false;
@@ -61,8 +61,8 @@ const colors = {
 };
 
 function getBaseZoom() {
-    const width = 100;
-    const height = 100;
+    const width = 78;
+    const height = 63;
     const padding = 20;
     const zoomX = ui.canvas.width / (width + padding);
     const zoomY = ui.canvas.height / (height + padding);
@@ -77,11 +77,11 @@ function updateZoomText() {
 function resetCamera() {
     baseZoom = getBaseZoom();
     camera.zoom = baseZoom;
-    camera.x = 50;
-    camera.y = 50;
+    camera.x = 39;
+    camera.y = 31.5;
     targetCamera.zoom = baseZoom;
-    targetCamera.x = 50;
-    targetCamera.y = 50;
+    targetCamera.x = 39;
+    targetCamera.y = 31.5;
     updateZoomText();
 }
 
@@ -96,11 +96,11 @@ function resizeCanvas() {
 
     if (camera.zoom <= oldBaseZoom + 0.001) {
         camera.zoom = baseZoom;
-        camera.x = 50;
-        camera.y = 50;
+        camera.x = 39;
+        camera.y = 31.5;
         targetCamera.zoom = baseZoom;
-        targetCamera.x = 50;
-        targetCamera.y = 50;
+        targetCamera.x = 39;
+        targetCamera.y = 31.5;
     } else if (camera.zoom < baseZoom) {
         camera.zoom = baseZoom;
         targetCamera.zoom = baseZoom;
@@ -120,6 +120,7 @@ resetCamera();
 
 async function scanDirectory(currentDirHandle, path = []) {
     let count = 0;
+    const promises = [];
     for await (const entry of currentDirHandle.values()) {
         if (entry.kind === 'file') {
             scanState.count++;
@@ -189,9 +190,15 @@ async function scanDirectory(currentDirHandle, path = []) {
                 count++;
             }
         } else if (entry.kind === 'directory') {
-            count += await scanDirectory(entry, [...path, entry.name]);
+            promises.push(scanDirectory(entry, [...path, entry.name]));
         }
     }
+    
+    const results = await Promise.all(promises);
+    for (const res of results) {
+        count += res;
+    }
+    
     return count;
 }
 
@@ -202,7 +209,7 @@ ui.btnOpen.addEventListener('click', async () => {
         
         fileMap.clear();
         selectedCells.clear();
-        bounds = { minX: 0, maxX: 100, minY: 0, maxY: 100 };
+        bounds = { minX: 0, maxX: 78, minY: 0, maxY: 63 };
 
         scanState.count = 0;
         scanState.startTime = performance.now();
@@ -382,9 +389,9 @@ function draw() {
     const viewMinY = camera.y - (ui.canvas.height / 2) / camera.zoom;
     const viewMaxY = camera.y + (ui.canvas.height / 2) / camera.zoom;
 
-    // Draw 100x100 unvisited grid
+    // Draw 78x63 unvisited grid
     ctx.fillStyle = colors.empty;
-    ctx.fillRect(0, 0, 100, 100);
+    ctx.fillRect(0, 0, 78, 63);
 
     // Draw chunks
     for (const [key, data] of fileMap.entries()) {
@@ -420,8 +427,8 @@ function draw() {
 
     for (let tx = tileStartX; tx <= tileEndX; tx++) {
         for (let ty = tileStartY; ty <= tileEndY; ty++) {
-            // Only draw if the tile overlaps our 0-100 map grid
-            if (tx * S > 100 || tx * S + S < 0 || ty * S > 100 || ty * S + S < 0) continue;
+            // Only draw if the tile overlaps our 78x63 map grid
+            if (tx * S > 78 || tx * S + S < 0 || ty * S > 63 || ty * S + S < 0) continue;
 
             const img = getMapTile(L, tx, ty);
             if (img) {
@@ -454,18 +461,18 @@ function draw() {
         ctx.lineWidth = 1 / camera.zoom;
 
         const startX = Math.max(0, Math.floor(viewMinX));
-        const endX = Math.min(100, Math.ceil(viewMaxX));
+        const endX = Math.min(78, Math.ceil(viewMaxX));
         const startY = Math.max(0, Math.floor(viewMinY));
-        const endY = Math.min(100, Math.ceil(viewMaxY));
+        const endY = Math.min(63, Math.ceil(viewMaxY));
 
         ctx.beginPath();
         for (let x = startX; x <= endX; x++) {
             ctx.moveTo(x, Math.max(0, viewMinY));
-            ctx.lineTo(x, Math.min(100, viewMaxY));
+            ctx.lineTo(x, Math.min(63, viewMaxY));
         }
         for (let y = startY; y <= endY; y++) {
             ctx.moveTo(Math.max(0, viewMinX), y);
-            ctx.lineTo(Math.min(100, viewMaxX), y);
+            ctx.lineTo(Math.min(78, viewMaxX), y);
         }
         ctx.stroke();
 

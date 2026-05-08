@@ -9,13 +9,29 @@
 </head>
 <body>
     <div id="app">
-        <!-- Floating Control Panel -->
-        <aside class="glass-panel controls">
-            <div class="header">
+        <!-- Floating Header -->
+        <header class="glass-panel top-header">
+            <div class="header-content">
                 <h1>Project Zomboid B42 Chunk Cleaner</h1>
                 <p class="subtitle">B42.17 Local Save Manager</p>
+                <div class="attribution">created by Sylwuu and Antigravity</div>
             </div>
+        </header>
+        <!-- Floating Top Center Info -->
+        <div class="glass-panel top-center-info">
+            <div class="info-item">
+                <span class="label">Zoom:</span>
+                <span id="zoom-level" class="value">100%</span>
+            </div>
+            <div class="info-separator"></div>
+            <div class="info-item">
+                <span class="label">Hovered Cell:</span>
+                <span id="hover-coords" class="value">None</span>
+            </div>
+        </div>
 
+        <!-- Floating Control Panel -->
+        <aside class="glass-panel controls">
             <div class="action-group">
                 <button id="btn-open" class="btn primary glow-effect">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
@@ -29,7 +45,7 @@
             <div class="selection-info">
                 <h3>Selection</h3>
                 <div class="stats">
-                    <span id="selected-count" class="badge">0</span> chunks selected
+                    <span id="selected-count" class="badge">0</span> cells selected
                 </div>
                 <div class="selection-actions">
                     <button id="btn-select-all" class="btn secondary">Select All</button>
@@ -56,24 +72,10 @@
             <div class="action-group reset-group">
                 <button id="btn-reset" class="btn danger" disabled>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"></path></svg>
-                    Reset Selected Chunks
+                    Reset Selected Cells
                 </button>
                 <p class="warning-text">⚠️ This action is permanent. Backup your save first!</p>
             </div>
-            
-            <div class="divider"></div>
-
-            <div class="view-info">
-                <div class="info-row">
-                    <span class="label">Zoom Level:</span>
-                    <span id="zoom-level" class="value">100%</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">Hovered Chunk:</span>
-                    <span id="hover-coords" class="value">None</span>
-                </div>
-            </div>
-            
             <div class="divider"></div>
             
             <div class="instructions">

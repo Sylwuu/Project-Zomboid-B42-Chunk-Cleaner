@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Zomboid B42 Chunk Cleaner</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Floating Control Panel -->
+        <aside class="glass-panel controls">
+            <div class="header">
+                <h1>Project Zomboid B42 Chunk Cleaner</h1>
+                <p class="subtitle">B42.17 Local Save Manager</p>
+            </div>
+
+            <div class="action-group">
+                <button id="btn-open" class="btn primary glow-effect">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    Select Save Folder
+                </button>
+                <p id="status-text" class="status-text">No folder selected.<br>Click above to begin.</p>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="selection-info">
+                <h3>Selection</h3>
+                <div class="stats">
+                    <span id="selected-count" class="badge">0</span> chunks selected
+                </div>
+                <div class="selection-actions">
+                    <button id="btn-select-all" class="btn secondary">Select All</button>
+                    <button id="btn-clear" class="btn secondary">Clear</button>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="reset-options">
+                <h3>What to Reset?</h3>
+                <label class="toggle-control">
+                    <input type="checkbox" id="cb-loot" checked>
+                    <span class="control"></span>
+                    <span class="label-text">Loot & Map (map, chunkdata, isoregion...)</span>
+                </label>
+                <label class="toggle-control">
+                    <input type="checkbox" id="cb-zombies" checked>
+                    <span class="control"></span>
+                    <span class="label-text">Zombies (zpop)</span>
+                </label>
+            </div>
+
+            <div class="action-group reset-group">
+                <button id="btn-reset" class="btn danger" disabled>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"></path></svg>
+                    Reset Selected Chunks
+                </button>
+                <p class="warning-text">⚠️ This action is permanent. Backup your save first!</p>
+            </div>
+            
+            <div class="divider"></div>
+
+            <div class="view-info">
+                <div class="info-row">
+                    <span class="label">Zoom Level:</span>
+                    <span id="zoom-level" class="value">100%</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Hovered Chunk:</span>
+                    <span id="hover-coords" class="value">None</span>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="instructions">
+                <h4>Controls</h4>
+                <ul>
+                    <li><kbd>Left Click + Drag</kbd> Select area</li>
+                    <li><kbd>Right Click + Drag</kbd> Deselect area</li>
+                    <li><kbd>Shift + Drag</kbd> Pan map</li>
+                    <li><kbd>Scroll</kbd> Zoom in/out</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Map Area -->
+        <main class="map-container">
+            <canvas id="map-canvas"></canvas>
+            
+            <!-- Floating Legend -->
+            <div class="glass-panel legend">
+                <h4>Map Legend</h4>
+                <div class="legend-item"><span class="color-box" style="background: var(--map-visited, #2ed573); box-shadow: 0 0 10px #2ed573;"></span> Visited</div>
+                <div class="legend-item"><span class="color-box" style="background: var(--map-empty, #2d3436); box-shadow: 0 0 10px #2d3436;"></span> Unvisited</div>
+                <div class="legend-item"><span class="color-box" style="background: var(--map-selected, #ff4757); box-shadow: 0 0 10px #ff4757;"></span> Selected</div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
